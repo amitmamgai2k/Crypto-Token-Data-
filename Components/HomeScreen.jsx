@@ -13,11 +13,12 @@ import {
 import React, { use, useEffect, useState } from 'react';
 import { Picker } from '@react-native-picker/picker';
 import axios from 'axios';
-import { Ionicons } from '@expo/vector-icons'; // Assuming you're using Expo
+import { Ionicons } from '@expo/vector-icons';
+
 
 const HomeScreen = ({ navigation }) => {
   const [searchInput, setSearchInput] = useState('');
-  const [selectedCurrency, setSelectedCurrency] = useState('USD');
+  const [selectedCurrency, setSelectedCurrency] = useState('usd');
   const [coinData, setCoinData] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
   const [currencyData, setCurrencyData] = useState([]);
@@ -28,24 +29,24 @@ const HomeScreen = ({ navigation }) => {
         if (response.data && response.data.market_data && response.data.market_data.market_cap) {
           setCurrencyData(Object.keys(response.data.market_data.market_cap));
         } else {
-          // Fallback to some default currencies if the API doesn't return what we expect
+
           setCurrencyData(['USD', 'EUR', 'INR', 'GBP', 'JPY']);
           console.warn('Could not get currency data from API, using defaults');
         }
       })
       .catch(error => {
         console.error('Error fetching currency data:', error);
-        // Set default currencies on error
+
         setCurrencyData(['USD', 'EUR', 'INR', 'GBP', 'JPY']);
       });
-  }, []); // Empty dependency array to run only once
+  }, []);
   useEffect(() => {
     setIsLoading(true);
 
     axios.get(`https://api.coingecko.com/api/v3/coins/markets?vs_currency=${selectedCurrency.toLowerCase()}`)
       .then((response) => {
         setCoinData(response.data);
-        console.log("response", response.data);
+
         setIsLoading(false);
       })
       .catch(error => {
@@ -59,9 +60,10 @@ const HomeScreen = ({ navigation }) => {
   );
 
   const handlePress = (item) => {
+    console.log('data',item.id,selectedCurrency);
     navigation.navigate('CoinDetails', {
       id: item.id,
-      currency: selectedCurrency
+      currency:selectedCurrency
     });
   };
 
